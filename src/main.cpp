@@ -18,17 +18,17 @@ int main(int argc, char * argv[])
 {
     if (!strcmp(argv[1], "install"))
     {
-        sosInstall.Main();
+        sosInstall.Main(argc, argv);
         return 0;
     }
     if (!strcmp(argv[1], "reinstall"))
     {
-        sosReinstall.Main();
+        sosReinstall.Main(argc, argv);
         return 0;
     }
     if (!strcmp(argv[1], "update"))
     {
-        sosUpdate.Main();
+        sosUpdate.Main(argc, argv);
         return 0;
     }
     cout << "Unknown Module";

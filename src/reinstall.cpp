@@ -6,7 +6,7 @@ namespace SOS_Utility {
 
 class SOS_Reinstall {
 public:
-    void Main ()
+    void Main (int argc, char * argv[])
     {
         cout << "Reinstall";
     }
