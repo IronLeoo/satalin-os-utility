@@ -6,9 +6,10 @@ namespace SOS_Utility {
 
 class SOS_Update {
 public:
-    void Main (int argc, char * argv[])
+    int Main (int argc, char * argv[])
     {
         cout << "Update";
+        return 0;
     }
 };
 }

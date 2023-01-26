@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc src/* -Wall -lstdc++ -lstdc++fs -o sosu
+gcc src/* -Wall -lstdc++ -lstdc++fs -g -o sosu

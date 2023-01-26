@@ -5,6 +5,7 @@
 #include "install.cpp"
 #include "reinstall.cpp"
 #include "update.cpp"
+#include <string>
 using namespace std;
 using namespace SOS_Utility;
 
@@ -18,19 +19,28 @@ int main(int argc, char * argv[])
 {
     if (!strcmp(argv[1], "install"))
     {
-        sosInstall.Main(argc, argv);
-        return 0;
+        if(!sosInstall.Main(argc, argv))
+        {
+            return 0;
+        }
+        return 1;
     }
     if (!strcmp(argv[1], "reinstall"))
     {
-        sosReinstall.Main(argc, argv);
-        return 0;
+        if(!sosReinstall.Main(argc, argv))
+        {
+            return 0;
+        }
+        return 1;
     }
     if (!strcmp(argv[1], "update"))
     {
-        sosUpdate.Main(argc, argv);
-        return 0;
+        if (!sosUpdate.Main(argc, argv))
+        {
+            return 0;
+        }
+        return 1;
     }
     cout << "Unknown Module";
-    return 0;
+    return 1;
 }
