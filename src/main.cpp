@@ -9,7 +9,7 @@
 using namespace std;
 using namespace SOS_Utility;
 
-//Global vars
+//Initialize the other classes
 SOS_Install sosInstall;
 SOS_Reinstall sosReinstall;
 SOS_Update sosUpdate;
@@ -41,6 +41,6 @@ int main(int argc, char * argv[])
         }
         return 1;
     }
-    cout << "Unknown Module";
+    cout << "Unknown Module \n";
     return 1;
 }
