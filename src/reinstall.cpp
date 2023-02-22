@@ -1,3 +1,5 @@
+#ifndef REINSTALL_CPP
+#define REINSTALL_CPP
 #include <algorithm>
 #include <array>
 #include <experimental/bits/fs_fwd.h>
@@ -13,7 +15,6 @@ using namespace std;
 namespace fs = experimental::filesystem;
 
 namespace SOS_Utility {
-
 class SOS_Reinstall {
 
 public:
@@ -27,77 +28,38 @@ public:
 
         if (!strcmp(argv[2], "all"))
         {
+            if (PreparePackageReinstall()) return 1;
+
+            if (ReinstallSosu()) return 1;
+
+            if (ReinstallConfigs()) return 1;
+
             return 0;
         }
 
         if(!strcmp(argv[2], "packages"))
         {
-            //Prevent from reinstalling configs
-            sos_install.set_isReinstallPackages(true);
+            if (PreparePackageReinstall()) return 1;
 
-            //If ran successfully, delete backup file, if not revert back
-            if (!ReinstallPackages())
-            {
-                fs::remove("/etc/satalinos/utility/db/installed.old");
-                return 0;
-            } else {
-                try {
-                    fs::rename("/etc/satalinos/utility/db/installed.old", "/etc/satalinos/utility/db/installed");
-                } catch (fs::filesystem_error& e) {
-                    cout << e.what() << '\n';
-                }
-                cout << "Failed to reinstall! \n";
-                return 1;
-            }
+            return 0;
         }
 
         if(!strcmp(argv[2], "sosu"))
         {
+            if (ReinstallSosu()) return 1;
+            
             return 0;
         }
 
         if(!strcmp(argv[2], "configs"))
         {
-            if (ReinstallConfigs())
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            if (ReinstallConfigs()) return 1;
+            
+            return 0;
         }
 
         cout << "Target not found: " << argv[2] << "\n";
         return 1;
-    }
-
-private:
-    string toBeInstalled;
-    string toYayInstall;
-    string selectedPackages;
-    int my_argc;
-    SOS_Common sos_common;
-    SOS_Install sos_install;
-
-    int ReinstallPackages ()
-    {
-        //Make backup of file before applying changes
-        try {
-            fs::rename("/etc/satalinos/utility/db/installed", "/etc/satalinos/utility/db/installed.old");
-            std::ofstream outfile ("/etc/satalinos/utility/db/installed");
-            outfile.close();
-        } catch (fs::filesystem_error& e) {
-            cout << e.what() << '\n';
-            return 1;
-        }
-
-        if (!sos_install.Main(my_argc, GetTargets()))
-        {
-            return 0;
-        } else {
-            return 1;
-        }
     }
 
     int ReinstallConfigs ()
@@ -105,6 +67,17 @@ private:
         // Backup old configs before attempting update
         string dbPath = "/etc/satalinos/utility/db/configfiles";
         string line;
+        string dlCmd = "curl https://ironleo.de/satalinos/data/db/configfiles > " + dbPath;
+        
+        if (!system(dlCmd.c_str()))
+        {
+            cout << "Received list of files to backup \n";
+        }
+        else
+        {
+            cout << "Error downloading list of files to backup \n";
+            return 1;
+        }
 
         for (auto & user : fs::directory_iterator("/home"))
         {
@@ -130,12 +103,60 @@ private:
             cout << "Backed up old configs to " << user.path().string().append("/.sosu_bak") << "\n";
         }
 
-        if (sos_common.Install_Config())
+        if (sos_common.Install_Config()) return 1;
+
+        return 0;
+    }
+
+private:
+    string toBeInstalled;
+    string toYayInstall;
+    string selectedPackages;
+    int my_argc;
+    SOS_Common sos_common;
+    SOS_Install sos_install;
+
+    int ReinstallSosu ()
+    {
+        return 0;
+    }
+
+    int PreparePackageReinstall ()
+    {
+        //Prevent from reinstalling configs
+        sos_install.set_isReinstallPackages(true);
+
+        //If ran successfully, delete backup file, if not revert back
+        if (!ReinstallPackages())
         {
+            fs::remove("/etc/satalinos/utility/db/installed.old");
+            return 0;
+        } else {
+            try {
+                fs::rename("/etc/satalinos/utility/db/installed.old", "/etc/satalinos/utility/db/installed");
+            } catch (fs::filesystem_error& e) {
+                cout << e.what() << '\n';
+            }
+            cout << "Failed to reinstall! \n";
+            return 1;
+        }
+    }
+
+    int ReinstallPackages ()
+    {
+        //Make backup of file before applying changes
+        try {
+            fs::rename("/etc/satalinos/utility/db/installed", "/etc/satalinos/utility/db/installed.old");
+            std::ofstream outfile ("/etc/satalinos/utility/db/installed");
+            outfile.close();
+        } catch (fs::filesystem_error& e) {
+            cout << e.what() << '\n';
             return 1;
         }
 
-        return 0;
+        if (!sos_install.Main(my_argc, GetTargets())) return 0;
+
+        return 1;
     }
 
     char** GetTargets ()
@@ -174,3 +195,4 @@ private:
     }
 };
 }
+#endif

@@ -12,7 +12,6 @@ using namespace std;
 namespace fs = experimental::filesystem;
 
 namespace SOS_Utility {
-
 class SOS_Install {
 
 public:
@@ -52,16 +51,10 @@ public:
             {
                 sos_common.Clean_Up();
 
-                if(Install_Yay())
-                {
-                    return 1;
-                }
+                if(Install_Yay()) return 1;
                 
                 if (!get_isReinstallPackages()) {
-                    if (sos_common.Install_Config())
-                    {
-                        return 1;
-                    }
+                    if (sos_common.Install_Config()) return 1;
                 }
                 
                 sos_common.Clean_Up();

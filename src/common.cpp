@@ -8,7 +8,6 @@ using namespace std;
 namespace fs = experimental::filesystem;
 
 namespace SOS_Utility {
-
 class SOS_Common {
 
 public:

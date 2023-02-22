@@ -19,28 +19,25 @@ int main(int argc, char * argv[])
 {
     if (!strcmp(argv[1], "install"))
     {
-        if(!sosInstall.Main(argc, argv))
-        {
-            return 0;
-        }
+        if (!sosInstall.Main(argc, argv)) return 0;
+
         return 1;
     }
+    
     if (!strcmp(argv[1], "reinstall"))
     {
-        if(!sosReinstall.Main(argc, argv))
-        {
-            return 0;
-        }
+        if (!sosReinstall.Main(argc, argv)) return 0;
+
         return 1;
     }
+
     if (!strcmp(argv[1], "update"))
     {
-        if (!sosUpdate.Main(argc, argv))
-        {
-            return 0;
-        }
+        if (!sosUpdate.Main(argc, argv)) return 0;
+
         return 1;
     }
+
     cout << "Unknown Module \n";
     return 1;
 }
