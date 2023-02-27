@@ -73,13 +73,19 @@ private:
 
     int UpdateSosu ()
     {
+        string currentVersionPath = "/usr/src/satalin-os-utility/VERSION";
+        string newVersionPath = "/var/cache/satalinos/sosu_version";
+        string versionURL = "https://raw.githubusercontent.com/IronLeoo/satalin-os-utility/master/VERSION";
+
+        if (CheckIsNewestVersion(currentVersionPath, newVersionPath, versionURL)) return 0;
+
+        if (sos_reinstall.ReinstallSosu()) return 1;
+        
         return 0;
     }
 
     int UpdateConfigs ()
     {
-        string newVersion;
-        string currentVersion;
         string logName;
         char buffer[128];
         FILE* pipe = popen("logname", "r");
@@ -94,28 +100,11 @@ private:
 
         pclose(pipe);
 
-        string newVersionPath = "/var/cache/satalinos/config_version";
-        if(system(("curl https://raw.githubusercontent.com/IronLeoo/linux-configs/master/.CONFIG_VERSION > " + newVersionPath).c_str()))
-        {
-            cout << "Failed to get newest version \n";
-            return 1;
-        }
-
         string currentVersionPath = "/home/" + logName.replace(logName.length()-1, 1, "") + "/.CONFIG_VERSION";
-        currentVersion = GetFileContent(currentVersionPath, "Current");
-
-        if (!fs::exists("/var/cache/satalinos/"))
-        {
-            fs::create_directory("/var/cache/satalinos");
-        }
-
-        newVersion = GetFileContent(newVersionPath, "New");
-
-        if (stoi(newVersion) <= stoi(currentVersion))
-        {
-            cout << "Already newest version \n";
-            return 0;
-        }
+        string newVersionPath = "/var/cache/satalinos/config_version";
+        string versionURL = "https://raw.githubusercontent.com/IronLeoo/linux-configs/master/.CONFIG_VERSION";
+        
+        if (CheckIsNewestVersion(currentVersionPath, newVersionPath, versionURL)) return 1;
 
         if (sos_reinstall.ReinstallConfigs()) return 1;
 
@@ -134,6 +123,34 @@ private:
         versionFile.close();
 
         return currentVersion;
+    }
+
+    int CheckIsNewestVersion (string currentVersionPath, string newVersionPath, string versionURL)
+    {
+        string currentVersion;
+        string newVersion;
+
+        if(system(("curl " + versionURL + " > " + newVersionPath).c_str()))
+        {
+            cout << "Failed to get newest version \n";
+            return 1;
+        }
+        
+        currentVersion = GetFileContent(currentVersionPath, "Current");
+
+        if (!fs::exists("/var/cache/satalinos/"))
+        {
+            fs::create_directory("/var/cache/satalinos");
+        }
+
+        newVersion = GetFileContent(newVersionPath, "New");
+
+        if (stoi(newVersion) <= stoi(currentVersion))
+        {
+            cout << "Already newest version \n";
+            return 1;
+        }
+        return 0;
     }
 };
 }

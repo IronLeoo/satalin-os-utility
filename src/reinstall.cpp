@@ -2,7 +2,9 @@
 #define REINSTALL_CPP
 #include <algorithm>
 #include <array>
+#include <cstdlib>
 #include <experimental/bits/fs_fwd.h>
+#include <experimental/bits/fs_path.h>
 #include <fstream>
 #include <iostream>
 #include <string.h>
@@ -108,6 +110,23 @@ public:
         return 0;
     }
 
+    int ReinstallSosu ()
+    {
+        cout << "Downloading repository \n";
+        if (system("git -C /usr/src/satalin-os-utility pull")) return 1;
+
+        cout << "Building binary \n";
+        if (system("/usr/src/satalin-os-utility/build.sh")) return 1;
+
+        if (fs::exists("/usr/sbin/sosu")) return 0;
+
+
+        cout << "Installing \n";
+        if (system("ln -s /usr/src/satalin-os-utility/sosu /usr/bin/sosu")) return 1;
+
+        return 0;
+    }
+
 private:
     string toBeInstalled;
     string toYayInstall;
@@ -115,11 +134,6 @@ private:
     int my_argc;
     SOS_Common sos_common;
     SOS_Install sos_install;
-
-    int ReinstallSosu ()
-    {
-        return 0;
-    }
 
     int PreparePackageReinstall ()
     {

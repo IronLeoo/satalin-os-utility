@@ -1,3 +1,4 @@
 #!/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-gcc src/* -Wall -lstdc++ -lstdc++fs -g -o sosu
+gcc ${SCRIPT_DIR}/src/* -Wall -lstdc++ -lstdc++fs -g -o ${SCRIPT_DIR}/sosu
