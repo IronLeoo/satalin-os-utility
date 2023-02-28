@@ -22,10 +22,13 @@ public:
 
         if (!strcmp(argv[2], "all"))
         {
+            cout << "Updating packages \n";
             if (UpdatePackages()) return 1;
 
+            cout << "Updating sosu \n";
             if (UpdateSosu()) return 1;
 
+            cout << "Updating configs \n";
             if (UpdateConfigs()) return 1;
 
             return 0;
@@ -33,6 +36,7 @@ public:
 
         if(!strcmp(argv[2], "packages"))
         {
+            cout << "Updating packages \n";
             if (UpdatePackages()) return 1;
             
             return 0;
@@ -40,6 +44,7 @@ public:
 
         if(!strcmp(argv[2], "sosu"))
         {
+            cout << "Updating sosu \n";
             if (UpdateSosu()) return 1;
             
             return 0;
@@ -47,7 +52,7 @@ public:
 
         if(!strcmp(argv[2], "configs"))
         {
-
+            cout << "Updating configs \n";
             if (UpdateConfigs()) 
             {
                 cout << "Please update manually \n";

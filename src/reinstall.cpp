@@ -30,10 +30,13 @@ public:
 
         if (!strcmp(argv[2], "all"))
         {
+            cout << "Reinstalling packages \n";
             if (PreparePackageReinstall()) return 1;
 
+            cout << "Reinstalling sosu \n";
             if (ReinstallSosu()) return 1;
 
+            cout << "Reinstalling configs \n";
             if (ReinstallConfigs()) return 1;
 
             return 0;
@@ -41,6 +44,7 @@ public:
 
         if(!strcmp(argv[2], "packages"))
         {
+            cout << "Reinstalling packages \n";
             if (PreparePackageReinstall()) return 1;
 
             return 0;
@@ -48,6 +52,7 @@ public:
 
         if(!strcmp(argv[2], "sosu"))
         {
+            cout << "Reinstalling sosu \n";
             if (ReinstallSosu()) return 1;
             
             return 0;
@@ -55,6 +60,7 @@ public:
 
         if(!strcmp(argv[2], "configs"))
         {
+            cout << "Reinstalling configs \n";
             if (ReinstallConfigs()) return 1;
             
             return 0;
