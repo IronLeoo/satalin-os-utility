@@ -1,12 +1,9 @@
 //Imports
-#include <algorithm>
-#include <iostream>
-#include <string.h>
 #include "install.cpp"
 #include "reinstall.cpp"
 #include "update.cpp"
-#include <string>
 #include <unistd.h>
+namespace fs = experimental::filesystem;
 using namespace std;
 using namespace SOS_Utility;
 
@@ -14,6 +11,7 @@ using namespace SOS_Utility;
 SOS_Install sosInstall;
 SOS_Reinstall sosReinstall;
 SOS_Update sosUpdate;
+SOS_Common sosCommon;
 
 //Check if user has root privileges
 int IsRoot ()
@@ -28,10 +26,18 @@ void CheckDirs ()
     string etcUtility = "/etc/satalinos/utility/";
     string utilityDB = "/etc/satalinos/utility/db/";
     string varCache = "/var/cache/satalinos/";
+    string settingsJSONPath = "/etc/satalinos/utility/settings.json";
 
     if (!fs::exists(etcUtility))
     {
         fs::create_directory(etcUtility);
+    }
+    if (!fs::exists(settingsJSONPath))
+    {
+        ofstream file;
+        file.open(settingsJSONPath);
+        file << "{\n    \"hidpi\" : false\n}";
+        file.flush();
     }
     if (!fs::exists(utilityDB))
     {
@@ -55,6 +61,9 @@ int main(int argc, char * argv[])
 
     //Check if directory structure is complete
     CheckDirs();
+
+    //Read settings.json and store values in variable
+    sosCommon.ReadSettingsJSON();
 
     if (argc < 2)
     {
